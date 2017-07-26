@@ -72,7 +72,13 @@ class ODMServiceProvider extends ServiceProvider
         $container->bindSingleton(MemoryInterface::class, $container->make(Memory::class, [
             'directory' => storage_path('/')
         ]));
+
         $container->bind(\Spiral\ODM\Schemas\LocatorInterface::class, \Spiral\ODM\Schemas\SchemaLocator::class);
+        
+        $this->app->singleton(MongoManager::class, function () use ($container) {
+            return $container->get(MongoManager::class);
+        });
+        
         //Ok, now can define our ODM as singleton
         $this->app->singleton(ODM::class, function () use ($container) {
             //Container will do the rest, since ODM stated as singleton we
